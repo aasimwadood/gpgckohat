@@ -10,7 +10,8 @@ import {
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import type { User } from '../App';
-
+import cm from '../assets/image/cm.jpeg';
+import principal from '../assets/image/javed.jpg';
 interface HomePageProps {
   user: User | null;
   onLogout: () => void;
@@ -33,15 +34,15 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
 
   const leadershipMessages = [
     {
-      title: "Principal's Message",
-      name: "Dr. Ahmed Hassan",
-      image: "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBidXNpbmVzc21hbiUyMHBvcnRyYWl0fGVufDF8fHx8MTc2MDY3ODA5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      title: "Minister's Message",
+      name: "Mr. Meena Khan",
+      image: cm,
       message: "Our institution stands as a beacon of knowledge, innovation, and academic excellence. We are committed to empowering students through cutting-edge education, fostering critical thinking, and nurturing the leaders of tomorrow who will drive meaningful change in our global community.",
     },
     {
-      title: "Vice Principal's Message",
-      name: "Prof. Sarah Ali",
-      image: "https://images.unsplash.com/photo-1629507208649-70919ca33793?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBidXNpbmVzc21hbiUyMHBvcnRyYWl0fGVufDF8fHx8MTc2MDY3ODA5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      title: "Principal's Message",
+      name: "Dr. Javed Iqbal",
+      image: principal,
       message: "We are dedicated to creating a vibrant ecosystem of learning, research, and innovation. Our mission is to provide world-class education that prepares students to tackle real challenges with confidence, competence, and ethical responsibility, while contributing to the advancement of science and technology.",
     },
   ];
@@ -58,21 +59,79 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
   const faculties = [
     {
       name: 'Faculty of Computer Science',
-      dean: 'Dean: Prof. Dr. Hassan Ahmed',
+      dean: 'HoD: Dr. Muhammad Abid',
       description: 'We are happy that you have chosen to be with us for a new phase in your academic journey. This faculty has a long history of excellence in computing education.',
       image: 'https://images.unsplash.com/photo-1618053238059-cc7761222f2a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzY2llbmNlJTIwbGFib3JhdG9yeSUyMHJlc2VhcmNofGVufDF8fHx8MTc2MDYzMjcwOXww&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-green-400 to-emerald-600',
     },
     {
-      name: 'Faculty of Business & Management',
-      dean: 'Dean: Prof. Dr. Ayesha Khan',
+      name: 'Faculty of Biology',
+      dean: 'HoD: Mr. ABC',
       description: 'The Faculty of Business & Management Sciences, at present, offers courses in Management, Marketing, Finance, Economics and related disciplines.',
       image: 'https://images.unsplash.com/photo-1629272039203-7d76fdaf1324?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMG1hbmFnZW1lbnQlMjBvZmZpY2V8ZW58MXx8fHwxNzYwNzAyMTY3fDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-blue-400 to-indigo-600',
     },
     {
-      name: 'Faculty of Engineering',
-      dean: 'Dean: Prof. Dr. Usman Tariq',
+      name: 'Faculty of English',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },
+      {
+      name: 'Faculty of Mathematics',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },
+      {
+      name: 'Faculty of Zoology',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },
+      {
+      name: 'Faculty of Statistics',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },{
+      name: 'Faculty of Political Science',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },{
+      name: 'Faculty of Chemistry',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },{
+      name: 'Faculty of Geography',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },{
+      name: 'Faculty of Physics',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },{
+      name: 'Faculty of Urdu',
+      dean: 'HoD: Mr. Faheem Illyas',
+      description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
+      image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      color: 'from-orange-400 to-red-600',
+    },
+    {
+      name: 'Faculty of Economics',
+      dean: 'HoD: Mr. Faheem Illyas',
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
