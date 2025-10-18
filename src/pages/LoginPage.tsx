@@ -170,12 +170,50 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
                 >
                   Principal Demo
                 </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDemoLogin('controller')}
+                >
+                  Controller Demo
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDemoLogin('coordinator')}
+                >
+                  Coordinator Demo
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDemoLogin('department')}
+                >
+                  HoD Demo
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDemoLogin('administration')}
+                >
+                  Accountant Demo
+                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <div className="text-center mt-6">
+          <p className="text-sm text-gray-600 mb-2">
+            Don't have an account?{' '}
+            <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/register')}>
+              Register here
+            </Button>
+          </p>
           <Button variant="link" onClick={() => navigate('/')}>
             ← Back to Home
           </Button>

@@ -13,12 +13,42 @@ interface HeaderProps {
 export default function Header({ user, onLogout }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     onLogout();
     navigate('/');
     setMobileMenuOpen(false);
+  };
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    // Search through available pages and content
+    const allPages = [
+      { title: 'Home', path: '/', keywords: ['home', 'main', 'index'] },
+      { title: 'About Us', path: '/about', keywords: ['about', 'information', 'history'] },
+      { title: 'Departments', path: '/departments', keywords: ['departments', 'computer science', 'mathematics', 'physics', 'chemistry'] },
+      { title: 'Programs', path: '/programs', keywords: ['programs', 'courses', 'degree', 'masters', 'msc', 'ma'] },
+      { title: 'Faculty', path: '/faculty', keywords: ['faculty', 'teachers', 'professors', 'staff'] },
+      { title: 'How to Apply', path: '/how-to-apply', keywords: ['apply', 'admission', 'application'] },
+      { title: 'Requirements', path: '/requirements', keywords: ['requirements', 'eligibility', 'criteria'] },
+      { title: 'Fee Structure', path: '/fee-structure', keywords: ['fee', 'fees', 'cost', 'tuition', 'charges'] },
+      { title: 'Contact Us', path: '/contact', keywords: ['contact', 'email', 'phone', 'address'] },
+      { title: 'Downloads', path: '/downloads', keywords: ['downloads', 'forms', 'documents', 'prospectus'] },
+      { title: 'Login', path: '/login', keywords: ['login', 'signin', 'portal'] },
+      { title: 'Register', path: '/register', keywords: ['register', 'signup', 'create account'] },
+    ];
+    const results = allPages.filter(page => {
+      const searchLower = query.toLowerCase();
+      return page.title.toLowerCase().includes(searchLower) ||
+             page.keywords.some(keyword => keyword.includes(searchLower));
+    });
+    setSearchResults(results.slice(0, 5));
   };
 
   return (
@@ -36,12 +66,12 @@ export default function Header({ user, onLogout }: HeaderProps) {
                 </div>
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
               </div>
-              
+
               <div className="hidden lg:flex flex-col">
                 <span className="text-sm font-light tracking-wider text-gray-300">Government Postgraduate</span>
                 <span className="text-lg leading-tight tracking-wide">College Kohat</span>
               </div>
-              
+
               <div className="lg:hidden">
                 <span className="text-lg tracking-wide">GPC Kohat</span>
               </div>
@@ -51,7 +81,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
             <nav className="hidden lg:flex items-center gap-1">
               <NavLink to="/">Home</NavLink>
               <NavLink to="/about">About</NavLink>
-              
+
               {/* Academics Dropdown */}
               <div className="relative group">
                 <button className="px-4 py-2 text-sm hover:text-blue-400 transition-colors flex items-center gap-1">
@@ -70,7 +100,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   </Link>
                 </div>
               </div>
-              
+
               {/* Admissions Dropdown */}
               <div className="relative group">
                 <button className="px-4 py-2 text-sm hover:text-blue-400 transition-colors flex items-center gap-1">
@@ -92,16 +122,16 @@ export default function Header({ user, onLogout }: HeaderProps) {
 
               <NavLink to="/contact">Contact</NavLink>
               <NavLink to="/downloads">Downloads</NavLink>
-              
+
               {user && (
-                <button 
+                <button
                   onClick={handleLogout}
                   className="ml-2 px-4 py-2 text-sm bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
                 >
                   Logout
                 </button>
               )}
-              
+
               {!user && (
                 <Link to="/login">
                   <button className="ml-2 px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
@@ -114,7 +144,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
             {/* Search and Mobile Menu */}
             <div className="flex items-center gap-2">
               {/* Search Button */}
-              <button 
+              <button
                 onClick={() => setSearchOpen(!searchOpen)}
                 className="w-10 h-10 rounded-full bg-yellow-500 hover:bg-yellow-400 flex items-center justify-center transition-all hover:scale-105 shadow-lg"
                 aria-label="Search"
@@ -140,9 +170,38 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   type="text"
                   placeholder="Search for programs, faculty, resources..."
                   className="w-full px-4 py-3 pl-12 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
                   autoFocus
                 />
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                {searchResults.length > 0 && (
+                  <div className="absolute top-full left-0 w-full bg-white text-gray-900 shadow-lg rounded-lg mt-2 overflow-hidden z-50">
+                    <ul className="divide-y divide-gray-200">
+                      {searchResults.map((result, index) => (
+                        <li key={index}>
+                          <Link
+                            to={result.path}
+                            onClick={() => {
+                              setSearchOpen(false);
+                              setSearchQuery('');
+                              setSearchResults([]);
+                            }}
+                            className="block px-4 py-3 hover:bg-blue-50 transition-colors"
+                          >
+                            <div className="text-sm">{result.title}</div>
+                            <div className="text-xs text-gray-500">{result.path}</div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {searchQuery && searchResults.length === 0 && (
+                  <div className="absolute top-full left-0 w-full bg-white text-gray-900 shadow-lg rounded-lg mt-2 p-4 z-50">
+                    <p className="text-sm text-gray-500">No results found for "{searchQuery}"</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -160,7 +219,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
               <MobileNavLink to="/about" onClick={() => setMobileMenuOpen(false)}>
                 About Us
               </MobileNavLink>
-              
+
               <div className="border-t border-slate-700 my-2 pt-2">
                 <p className="text-xs text-gray-400 px-3 mb-2">ACADEMICS</p>
                 <MobileNavLink to="/departments" onClick={() => setMobileMenuOpen(false)}>
@@ -193,16 +252,16 @@ export default function Header({ user, onLogout }: HeaderProps) {
               <MobileNavLink to="/downloads" onClick={() => setMobileMenuOpen(false)}>
                 Downloads
               </MobileNavLink>
-              
+
               {user && (
-                <button 
+                <button
                   onClick={handleLogout}
                   className="mt-2 px-4 py-3 text-sm text-left text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
                 >
                   Logout
                 </button>
               )}
-              
+
               {!user && (
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                   <button className="mt-2 w-full px-4 py-3 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
@@ -221,8 +280,8 @@ export default function Header({ user, onLogout }: HeaderProps) {
 // Desktop Nav Link Component
 function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
-    <Link 
-      to={to} 
+    <Link
+      to={to}
       className="px-4 py-2 text-sm hover:text-blue-400 transition-colors relative group"
     >
       {children}
@@ -232,17 +291,17 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
 }
 
 // Mobile Nav Link Component
-function MobileNavLink({ 
-  to, 
-  onClick, 
-  children 
-}: { 
-  to: string; 
-  onClick: () => void; 
+function MobileNavLink({
+  to,
+  onClick,
+  children
+}: {
+  to: string;
+  onClick: () => void;
   children: React.ReactNode;
 }) {
   return (
-    <Link 
+    <Link
       to={to}
       onClick={onClick}
       className="px-3 py-3 text-sm text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"

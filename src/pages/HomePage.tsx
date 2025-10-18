@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Link } from 'react-router-dom';
-import { 
-  Calendar, Bell, BookOpen, Award, Users, TrendingUp, 
-  Wifi, Network, GraduationCap, Lightbulb, ArrowRight 
+import {
+  Calendar, Bell, BookOpen, Award, Users, TrendingUp,
+  Wifi, Network, GraduationCap, Lightbulb, ArrowRight,
+  Building2, Globe, Target, Sparkles, Star, CheckCircle,
+  Trophy, Zap, Heart
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import type { User } from '../App';
@@ -18,11 +22,37 @@ interface HomePageProps {
 }
 
 export default function HomePage({ user, onLogout }: HomePageProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState<any>(null);
   const newsItems = [
-    { id: 1, title: 'Admissions Open for Spring 2025', date: '2025-10-15', category: 'Admissions' },
-    { id: 2, title: 'Annual Sports Week Commences Next Monday', date: '2025-10-14', category: 'Events' },
-    { id: 3, title: 'Career Counseling Workshop - Register Now', date: '2025-10-12', category: 'Workshop' },
-    { id: 4, title: 'Mid-term Examination Schedule Released', date: '2025-10-10', category: 'Examination' },
+    {
+      id: 1,
+      title: 'Admissions Open for Spring 2025',
+      date: '2025-10-15',
+      category: 'Admissions',
+      fullMessage: 'We are pleased to announce that admissions for Spring 2025 are now open. Join us in our journey towards excellence. Applications can be submitted online through our portal. Deadline for applications is December 15, 2024.'
+    },
+    {
+      id: 2,
+      title: 'Annual Sports Week Commences Next Monday',
+      date: '2025-10-14',
+      category: 'Events',
+      fullMessage: 'Our Annual Sports Week will begin next Monday with opening ceremony at 9 AM. All students are encouraged to participate in various sporting events including cricket, football, badminton, and athletics. Prizes will be awarded to winners.'
+    },
+    {
+      id: 3,
+      title: 'Career Counseling Workshop - Register Now',
+      date: '2025-10-12',
+      category: 'Workshop',
+      fullMessage: 'Join us for a comprehensive career counseling workshop featuring industry experts. Learn about career paths, job market trends, and professional development. Registration is mandatory and seats are limited.'
+    },
+    {
+      id: 4,
+      title: 'Mid-term Examination Schedule Released',
+      date: '2025-10-10',
+      category: 'Examination',
+      fullMessage: 'The mid-term examination schedule for all programs has been released. Students can check their examination timetable on the student portal. Exams will commence from November 1, 2024.'
+    },
   ];
 
   const quickStats = [
@@ -36,26 +66,73 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
     {
       title: "Minister's Message",
       name: "Mr. Meena Khan",
+
+      designation: "High Education Minister",
       image: cm,
       message: "Our institution stands as a beacon of knowledge, innovation, and academic excellence. We are committed to empowering students through cutting-edge education, fostering critical thinking, and nurturing the leaders of tomorrow who will drive meaningful change in our global community.",
+      fullMessage: "Dear Students, Faculty, and Staff,\n\nOur institution stands as a beacon of knowledge, innovation, and academic excellence. We are committed to empowering students through cutting-edge education, fostering critical thinking, and nurturing the leaders of tomorrow who will drive meaningful change in our global community.\n\nAs we navigate the challenges of the 21st century, our institution remains steadfast in its mission to provide world-class education while maintaining our core values of integrity, innovation, and inclusivity. We believe in holistic development, preparing our students not just academically, but also as responsible global citizens.\n\nI invite you to join us in this transformative journey of learning, discovery, and growth.\n\nMr. Meena Khan\nHigh Education Minister"
     },
     {
       title: "Principal's Message",
       name: "Dr. Javed Iqbal",
       image: principal,
+
+      designation: "Principal",
       message: "We are dedicated to creating a vibrant ecosystem of learning, research, and innovation. Our mission is to provide world-class education that prepares students to tackle real challenges with confidence, competence, and ethical responsibility, while contributing to the advancement of science and technology.",
+      fullMessage: "Dear Colleagues and Students,\n\nWe are dedicated to creating a vibrant ecosystem of learning, research, and innovation. Our mission is to provide world-class education that prepares students to tackle real challenges with confidence, competence, and ethical responsibility, while contributing to the advancement of science and technology.\n\nOur faculty members are committed to excellence in teaching and research, ensuring that every student receives personalized attention and mentorship. We foster an environment where creativity flourishes, collaboration is encouraged, and diversity is celebrated.\n\nTogether, we are building a community of scholars and practitioners who will make a positive impact on society.\n\nDr. Javed Iqbal\nPrincipal"
     },
   ];
 
-  const whyStats = [
-    { icon: Wifi, value: '1 Gbps', label: 'Internet Speed', color: 'from-blue-500 to-cyan-500' },
-    { icon: Network, value: '100%', label: 'Campus Coverage', color: 'from-purple-500 to-pink-500' },
-    { icon: Users, value: '26000+', label: 'Alumni Network', color: 'from-orange-500 to-red-500' },
-    { icon: Award, value: 'Scholarship', label: 'Programs', color: 'from-green-500 to-emerald-500' },
-    { icon: Lightbulb, value: 'KIC', label: 'Innovation Center', color: 'from-yellow-500 to-orange-500' },
-    { icon: GraduationCap, value: '8000+', label: 'Students', color: 'from-indigo-500 to-purple-500' },
+  const whyChooseFeatures = [
+    {
+      icon: GraduationCap,
+      title: "Excellence in Education",
+      description: "30+ years of academic excellence with world-class faculty and cutting-edge curriculum",
+      gradient: "from-blue-500 to-cyan-500",
+      stat: "98%",
+      statLabel: "Success Rate"
+    },
+    {
+      icon: Users,
+      title: "Global Alumni Network",
+      description: "Join 26,000+ successful alumni making impact worldwide across industries",
+      gradient: "from-purple-500 to-pink-500",
+      stat: "26K+",
+      statLabel: "Alumni"
+    },
+    {
+      icon: Building2,
+      title: "State-of-the-Art Infrastructure",
+      description: "Modern facilities, smart classrooms, and advanced laboratories for comprehensive learning",
+      gradient: "from-orange-500 to-red-500",
+      stat: "100%",
+      statLabel: "Digital"
+    },
+    {
+      icon: Trophy,
+      title: "Outstanding Placement Record",
+      description: "92% placement rate with top national and international companies",
+      gradient: "from-green-500 to-emerald-500",
+      stat: "92%",
+      statLabel: "Placed"
+    },
+    {
+      icon: Lightbulb,
+      title: "Innovation & Research",
+      description: "Dedicated Innovation Center (KIC) fostering entrepreneurship and research",
+      gradient: "from-yellow-500 to-orange-500",
+      stat: "50+",
+      statLabel: "Research Projects"
+    },
+    {
+      icon: Globe,
+      title: "International Collaborations",
+      description: "Partnerships with leading universities worldwide for exchange programs",
+      gradient: "from-indigo-500 to-purple-500",
+      stat: "20+",
+      statLabel: "Partners"
+    }
   ];
-
   const faculties = [
     {
       name: 'Faculty of Computer Science',
@@ -63,6 +140,8 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'We are happy that you have chosen to be with us for a new phase in your academic journey. This faculty has a long history of excellence in computing education.',
       image: 'https://images.unsplash.com/photo-1618053238059-cc7761222f2a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzY2llbmNlJTIwbGFib3JhdG9yeSUyMHJlc2VhcmNofGVufDF8fHx8MTc2MDYzMjcwOXww&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-green-400 to-emerald-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },
     {
       name: 'Faculty of Biology',
@@ -70,6 +149,8 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'The Faculty of Business & Management Sciences, at present, offers courses in Management, Marketing, Finance, Economics and related disciplines.',
       image: 'https://images.unsplash.com/photo-1629272039203-7d76fdaf1324?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMG1hbmFnZW1lbnQlMjBvZmZpY2V8ZW58MXx8fHwxNzYwNzAyMTY3fDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-blue-400 to-indigo-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },
     {
       name: 'Faculty of English',
@@ -77,6 +158,8 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },
       {
       name: 'Faculty of Mathematics',
@@ -84,6 +167,8 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },
       {
       name: 'Faculty of Zoology',
@@ -91,6 +176,8 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },
       {
       name: 'Faculty of Statistics',
@@ -98,24 +185,33 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },{
       name: 'Faculty of Political Science',
       dean: 'HoD: Mr. Faheem Illyas',
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },{
       name: 'Faculty of Chemistry',
       dean: 'HoD: Mr. Faheem Illyas',
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },{
       name: 'Faculty of Geography',
       dean: 'HoD: Mr. Faheem Illyas',
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },{
       name: 'Faculty of Physics',
       dean: 'HoD: Mr. Faheem Illyas',
@@ -128,6 +224,9 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },
     {
       name: 'Faculty of Economics',
@@ -135,8 +234,14 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       description: 'The Faculty of Engineering comprises of six departments: Electrical Engineering, Mechanical Engineering, Civil Engineering, and related disciplines.',
       image: 'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmdpbmVlcmluZyUyMHRlY2hub2xvZ3klMjBlcXVpcG1lbnR8ZW58MXx8fHwxNzYwNzAyMTcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
       color: 'from-orange-400 to-red-600',
+      programs: ['Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Chemical Engineering'],
+      fullDetail: 'The Engineering faculty offers ABET-accredited programs with state-of-the-art labs, research facilities, and strong industry partnerships ensuring graduates are ready for professional challenges.'
     },
   ];
+  const openDialog = (type: 'message' | 'news' | 'faculty', content: any) => {
+    setDialogContent({ type, ...content });
+    setIsDialogOpen(true);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -204,8 +309,12 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
                   <p className="text-gray-700 mb-6 leading-relaxed">
                     {leader.message}
                   </p>
-                  <Button variant="outline" className="group">
-                    Read Full Message 
+                  <Button
+                    variant="outline"
+                    className="group"
+                    onClick={() => openDialog('message', leader)}
+                  >
+                    Read Full Message
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </CardContent>
@@ -215,50 +324,70 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
         </div>
       </section>
 
-      {/* Why Choose Us Section with Slider */}
-      <section className="py-16 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+      {/* Innovative Why Choose Us Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full mb-4">
+              <Sparkles className="w-4 h-4" />
+              <span className="text-sm">Excellence in Every Aspect</span>
+            </div>
             <h2 className="text-gray-900 mb-4">Why Choose Our Institution</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto">
+            <p className="text-gray-600 max-w-3xl mx-auto text-lg">
               Find your voice, fuel your passion and forge your path at our institution, where diversity, inclusivity and student success come first.
             </p>
           </div>
 
-          <div className="relative">
-            <div className="flex gap-6 animate-scroll-left hover:pause">
-              {[...whyStats, ...whyStats].map((stat, index) => (
-                <Card key={index} className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-0 flex-shrink-0 w-48">
-                  <CardContent className="p-6 text-center">
-                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br ${stat.color} flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300`}>
-                      <stat.icon className="w-8 h-8 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {whyChooseFeatures.map((feature, index) => (
+              <Card
+                key={index}
+                className="group hover:shadow-2xl transition-all duration-500 border-0 bg-white/80 backdrop-blur-sm hover:-translate-y-2"
+              >
+                <CardContent className="p-8">
+                  <div className="relative mb-6">
+                    <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
+                      <feature.icon className="w-10 h-10 text-white" />
                     </div>
-                    <div className="text-gray-900 mb-1">{stat.value}</div>
-                    <p className="text-sm text-gray-600">{stat.label}</p>
+                    <div className={`absolute -right-2 -top-2 bg-gradient-to-br ${feature.gradient} text-white px-3 py-1 rounded-full text-xs shadow-lg`}>
+                      {feature.stat}
+                    </div>
+                  </div>
+                  <h3 className="text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                    {feature.description}
+                  </p>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>{feature.statLabel}</span>
+                  </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
+          {/* Stats Banner */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { icon: Wifi, label: '1 Gbps Internet', value: 'High Speed' },
+              { icon: Network, label: 'Campus Coverage', value: '100%' },
+              { icon: Star, label: 'NAAC Rating', value: 'A+ Grade' },
+              { icon: Heart, label: 'Student Satisfaction', value: '95%' }
+            ].map((stat, idx) => (
+              <div key={idx} className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+                <stat.icon className="w-8 h-8 mx-auto mb-3 text-blue-600" />
+                <div className="text-sm text-gray-600 mb-1">{stat.label}</div>
+                <div className="text-gray-900">{stat.value}</div>
           </div>
 
-          <style>{`
-            @keyframes scroll-left {
-              0% {
-                transform: translateX(0);
-              }
-              100% {
-                transform: translateX(-50%);
-              }
-            }
-            
-            .animate-scroll-left {
-              animation: scroll-left 20s linear infinite;
-            }
-            
-            .animate-scroll-left:hover {
-              animation-play-state: paused;
-            }
-          `}</style>
+            ))}
+          </div>
+
+
         </div>
       </section>
 
@@ -294,7 +423,11 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
                   <p className="text-gray-600 text-sm mb-6 line-clamp-3">
                     {faculty.description}
                   </p>
-                  <Button variant="default" className="w-full group/btn">
+                  <Button
+                    variant="default"
+                    className="w-full group/btn"
+                    onClick={() => openDialog('faculty', faculty)}
+                  >
                     View Detail
                     <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
@@ -345,7 +478,11 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
                     </div>
                   </div>
                   <h3 className="text-gray-900 mb-2">{item.title}</h3>
-                  <Button variant="link" className="p-0 h-auto">
+                  <Button
+                    variant="link"
+                    className="p-0 h-auto"
+                    onClick={() => openDialog('news', item)}
+                  >
                     Read More →
                   </Button>
                 </CardContent>
@@ -359,7 +496,7 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-gray-900 text-center mb-12">Explore Our Campus</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="overflow-hidden group">
               <div className="aspect-video relative overflow-hidden">
@@ -423,6 +560,84 @@ export default function HomePage({ user, onLogout }: HomePageProps) {
         </div>
       </section>
 
+      {/* Dialog for Full Content */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          {dialogContent?.type === 'message' && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{dialogContent.title}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden">
+                    <ImageWithFallback
+                      src={dialogContent.image}
+                      alt={dialogContent.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-gray-900">{dialogContent.name}</p>
+                    <p className="text-sm text-gray-600">{dialogContent.designation}</p>
+                  </div>
+                </div>
+                <div className="prose max-w-none">
+                  <p className="text-gray-700 whitespace-pre-line leading-relaxed">
+                    {dialogContent.fullMessage}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+          {dialogContent?.type === 'news' && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{dialogContent.title}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Badge variant="secondary">{dialogContent.category}</Badge>
+                  <div className="flex items-center gap-1 text-sm text-gray-500">
+                    <Calendar className="w-4 h-4" />
+                    {new Date(dialogContent.date).toLocaleDateString()}
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed">
+                  {dialogContent.fullMessage}
+                </p>
+              </div>
+            </>
+          )}
+          {dialogContent?.type === 'faculty' && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{dialogContent.name}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="relative h-48 rounded-lg overflow-hidden">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${dialogContent.color} opacity-90`}></div>
+                  <ImageWithFallback
+                    src={dialogContent.image}
+                    alt={dialogContent.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-gray-600">{dialogContent.dean}</p>
+                <p className="text-gray-700 leading-relaxed">{dialogContent.fullDetail}</p>
+                <div>
+                  <p className="text-gray-900 mb-2">Programs Offered:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {dialogContent.programs?.map((program: string, idx: number) => (
+                      <Badge key={idx} variant="secondary">{program}</Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
       <Footer />
     </div>
   );

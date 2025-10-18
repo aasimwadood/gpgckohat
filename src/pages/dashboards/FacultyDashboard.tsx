@@ -9,10 +9,12 @@ import { Textarea } from '../../components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Checkbox } from '../../components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from '../../components/ui/dialog';
 import {
   LayoutDashboard, Users, CheckCircle, FileText, Upload,
-  BookOpen, MessageSquare, Calendar, TrendingUp
+  BookOpen, MessageSquare, Calendar, Eye, Edit, Trash2, Plus
 } from 'lucide-react';
+import { toast } from 'sonner';
 import type { User } from '../../App';
 
 interface FacultyDashboardProps {
@@ -22,6 +24,21 @@ interface FacultyDashboardProps {
 
 export default function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
   const [activeView, setActiveView] = useState('overview');
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<'course' | 'assignment' | 'material' | 'grade' | 'edit-material' | 'delete-material' | null>(null);
+  const [assignmentForm, setAssignmentForm] = useState({
+    course: '',
+    title: '',
+    description: '',
+    dueDate: '',
+    totalMarks: ''
+  });
+  const [materialForm, setMaterialForm] = useState({
+    title: '',
+    type: 'lecture'
+  });
+  const [gradeData, setGradeData] = useState<any>({});
 
   const navigation = [
     { name: 'Dashboard', icon: LayoutDashboard, onClick: () => setActiveView('overview') },
@@ -35,9 +52,9 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
   ];
 
   const courses = [
-    { code: 'CS-201', name: 'Data Structures', students: 45, section: 'A' },
-    { code: 'CS-301', name: 'Database Systems', students: 38, section: 'B' },
-    { code: 'CS-401', name: 'Software Engineering', students: 42, section: 'A' },
+    { code: 'CS-201', name: 'Data Structures', students: 45, section: 'A', credits: 3 },
+    { code: 'CS-301', name: 'Database Systems', students: 38, section: 'B', credits: 3 },
+    { code: 'CS-401', name: 'Software Engineering', students: 42, section: 'A', credits: 4 },
   ];
 
   const students = [
@@ -48,11 +65,95 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
     { id: '2021-CS-105', name: 'Usman Tariq', attendance: 88, marks: 85 },
   ];
 
-  const assignments = [
-    { id: 1, course: 'CS-201', title: 'Binary Tree Implementation', dueDate: '2025-10-22', submissions: 35, total: 45 },
-    { id: 2, course: 'CS-301', title: 'SQL Queries Practice', dueDate: '2025-10-25', submissions: 30, total: 38 },
-    { id: 3, course: 'CS-401', title: 'UML Diagrams Project', dueDate: '2025-10-28', submissions: 38, total: 42 },
-  ];
+  const [assignments, setAssignments] = useState([
+    { id: 1, course: 'CS-201', title: 'Binary Tree Implementation', dueDate: '2025-10-22', submissions: 35, total: 45, description: 'Implement a binary tree with insert, delete, and search operations' },
+    { id: 2, course: 'CS-301', title: 'SQL Queries Practice', dueDate: '2025-10-25', submissions: 30, total: 38, description: 'Practice complex SQL queries with joins and subqueries' },
+    { id: 3, course: 'CS-401', title: 'UML Diagrams Project', dueDate: '2025-10-28', submissions: 38, total: 42, description: 'Create UML diagrams for a complete software project' },
+  ]);
+
+  const [materials, setMaterials] = useState([
+    { id: 1, course: 'CS-201', title: 'Lecture 1: Introduction', type: 'lecture' },
+    { id: 2, course: 'CS-201', title: 'Lecture 2: Arrays', type: 'lecture' },
+    { id: 3, course: 'CS-201', title: 'Lab Manual', type: 'lab' },
+    { id: 4, course: 'CS-201', title: 'Assignment Guidelines', type: 'assignment' },
+  ]);
+
+  const [editMaterialData, setEditMaterialData] = useState<any>(null);
+
+  const openDialog = (type: 'course' | 'assignment' | 'material' | 'grade' | 'edit-material' | 'delete-material', data?: any) => {
+    setDialogType(type as any);
+    if (data) {
+      if (type === 'assignment') {
+        setAssignmentForm({
+          course: data.course || '',
+          title: data.title || '',
+          description: data.description || '',
+          dueDate: data.dueDate || '',
+          totalMarks: data.totalMarks || '100'
+        });
+      } else if (type === 'grade') {
+        setGradeData(data);
+      } else if (type === 'edit-material') {
+        setEditMaterialData(data);
+        setMaterialForm({
+          title: data.title || '',
+          type: data.type || 'lecture'
+        });
+      }
+    }
+    setIsDialogOpen(true);
+  };
+
+  const handleCreateAssignment = () => {
+    if (!assignmentForm.course || !assignmentForm.title || !assignmentForm.dueDate) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    const newAssignment = {
+      id: assignments.length + 1,
+      course: assignmentForm.course,
+      title: assignmentForm.title,
+      description: assignmentForm.description,
+      dueDate: assignmentForm.dueDate,
+      submissions: 0,
+      total: courses.find(c => c.code === assignmentForm.course)?.students || 0
+    };
+
+    setAssignments([...assignments, newAssignment]);
+    toast.success('Assignment created successfully!');
+    setIsDialogOpen(false);
+    setAssignmentForm({ course: '', title: '', description: '', dueDate: '', totalMarks: '' });
+  };
+
+  const handleUploadMaterial = () => {
+    if (!materialForm.title) {
+      toast.error('Please enter material title');
+      return;
+    }
+
+    const newMaterial = {
+      id: materials.length + 1,
+      course: selectedCourse?.code || 'CS-201',
+      title: materialForm.title,
+      type: materialForm.type
+    };
+
+    setMaterials([...materials, newMaterial]);
+    toast.success('Material uploaded successfully!');
+    setIsDialogOpen(false);
+    setMaterialForm({ title: '', type: 'lecture' });
+  };
+
+  const handleDeleteMaterial = (id: number) => {
+    setMaterials(materials.filter(m => m.id !== id));
+    toast.success('Material deleted successfully!');
+  };
+
+  const handleGradeSubmission = () => {
+    toast.success('Grades submitted successfully!');
+    setIsDialogOpen(false);
+  };
 
   return (
     <DashboardLayout user={user} onLogout={onLogout} navigation={navigation}>
@@ -139,7 +240,16 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                         <TableCell>{course.section}</TableCell>
                         <TableCell>{course.students}</TableCell>
                         <TableCell>
-                          <Button size="sm" variant="outline">View Details</Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedCourse(course);
+                              openDialog('course', course);
+                            }}
+                          >
+                            View Details
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -167,13 +277,92 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                         <p className="text-gray-900">{assignment.submissions}/{assignment.total}</p>
                         <p className="text-sm text-gray-600">Submissions</p>
                       </div>
-                      <Button size="sm" variant="outline">Grade</Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openDialog('grade', assignment)}
+                      >
+                        Grade
+                      </Button>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {activeView === 'courses' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>My Courses - Detailed View</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="cs-201">
+                <TabsList className="mb-4">
+                  <TabsTrigger value="cs-201">CS-201</TabsTrigger>
+                  <TabsTrigger value="cs-301">CS-301</TabsTrigger>
+                  <TabsTrigger value="cs-401">CS-401</TabsTrigger>
+                </TabsList>
+                <TabsContent value="cs-201">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Course Code</p>
+                        <p className="text-gray-900">CS-201</p>
+                      </div>
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Total Students</p>
+                        <p className="text-gray-900">45</p>
+                      </div>
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Section</p>
+                        <p className="text-gray-900">A</p>
+                      </div>
+                    </div>
+
+                    <div className="border-t pt-4">
+                      <h4 className="text-gray-900 mb-4">Course Description</h4>
+                      <p className="text-gray-600">
+                        This course covers fundamental data structures including arrays, linked lists, stacks, queues, trees, and graphs.
+                        Students will learn to implement and analyze these structures for efficient problem-solving.
+                      </p>
+                    </div>
+
+                    <div className="border-t pt-4">
+                      <h4 className="text-gray-900 mb-4">Student List</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Student ID</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Attendance</TableHead>
+                            <TableHead>Marks</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {students.map((student) => (
+                            <TableRow key={student.id}>
+                              <TableCell>{student.id}</TableCell>
+                              <TableCell>{student.name}</TableCell>
+                              <TableCell>{student.attendance}%</TableCell>
+                              <TableCell>{student.marks}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="cs-301">
+                  <p className="text-gray-600">Database Systems course details...</p>
+                </TabsContent>
+                <TabsContent value="cs-401">
+                  <p className="text-gray-600">Software Engineering course details...</p>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
         )}
 
         {activeView === 'attendance' && (
@@ -191,7 +380,7 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                 <TabsContent value="cs-201" className="mt-4">
                   <div className="mb-4">
                     <Label>Date</Label>
-                    <Input type="date" className="max-w-xs" />
+                    <Input type="date" className="max-w-xs" defaultValue={new Date().toISOString().split('T')[0]} />
                   </div>
                   <Table>
                     <TableHeader>
@@ -214,7 +403,9 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                     </TableBody>
                   </Table>
                   <div className="mt-4">
-                    <Button>Submit Attendance</Button>
+                    <Button onClick={() => toast.success('Attendance submitted successfully!')}>
+                      Submit Attendance
+                    </Button>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -227,7 +418,10 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>Manage Assignments</CardTitle>
-                <Button>Create New Assignment</Button>
+                <Button onClick={() => openDialog('assignment')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create New Assignment
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -250,8 +444,17 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                       <TableCell>{assignment.submissions}/{assignment.total}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline">View</Button>
-                          <Button size="sm" variant="outline">Grade</Button>
+                          <Button size="sm" variant="outline">
+                            <Eye className="w-4 h-4 mr-1" />
+                            View
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openDialog('grade', assignment)}
+                          >
+                            Grade
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -316,7 +519,9 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                 </Table>
 
                 <div className="flex gap-4">
-                  <Button>Submit Marks</Button>
+                  <Button onClick={() => toast.success('Marks submitted successfully!')}>
+                    Submit Marks
+                  </Button>
                   <Button variant="outline">Import from Excel</Button>
                 </div>
               </div>
@@ -329,7 +534,10 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>Course Materials</CardTitle>
-                <Button>Upload New Material</Button>
+                <Button onClick={() => openDialog('material')}>
+                  <Upload className="w-4 h-4 mr-2" />
+                  Upload New Material
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -340,12 +548,30 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                   <TabsTrigger value="cs-401">CS-401</TabsTrigger>
                 </TabsList>
                 <TabsContent value="cs-201" className="space-y-3 mt-4">
-                  {['Lecture 1: Introduction', 'Lecture 2: Arrays', 'Lab Manual', 'Assignment Guidelines'].map((item, i) => (
-                    <div key={i} className="flex justify-between items-center p-3 border rounded-lg">
-                      <span className="text-gray-900">{item}</span>
+                  {materials.filter(m => m.course === 'CS-201').map((item) => (
+                    <div key={item.id} className="flex justify-between items-center p-3 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <FileText className="w-5 h-5 text-blue-500" />
+                        <span className="text-gray-900">{item.title}</span>
+                        <Badge variant="outline">{item.type}</Badge>
+                      </div>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline">Edit</Button>
-                        <Button size="sm" variant="outline">Delete</Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openDialog('edit-material', item)}
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openDialog('delete-material', item)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Delete
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -379,7 +605,9 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                   <Label>Message</Label>
                   <Textarea rows={6} placeholder="Enter announcement message..." />
                 </div>
-                <Button>Post Announcement</Button>
+                <Button onClick={() => toast.success('Announcement posted successfully!')}>
+                  Post Announcement
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -432,6 +660,246 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
             </CardContent>
           </Card>
         )}
+
+        {/* Dialogs */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            {dialogType === 'course' && selectedCourse && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Course Details - {selectedCourse.name}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Course Code</Label>
+                      <p className="text-gray-900">{selectedCourse.code}</p>
+                    </div>
+                    <div>
+                      <Label>Section</Label>
+                      <p className="text-gray-900">{selectedCourse.section}</p>
+                    </div>
+                    <div>
+                      <Label>Total Students</Label>
+                      <p className="text-gray-900">{selectedCourse.students}</p>
+                    </div>
+                    <div>
+                      <Label>Credits</Label>
+                      <p className="text-gray-900">{selectedCourse.credits}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Description</Label>
+                    <p className="text-gray-600">
+                      Complete course covering all fundamental and advanced topics with practical implementations.
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {dialogType === 'assignment' && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Create New Assignment</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Select Course *</Label>
+                    <select
+                      className="w-full p-2 border rounded-md"
+                      value={assignmentForm.course}
+                      onChange={(e) => setAssignmentForm({ ...assignmentForm, course: e.target.value })}
+                    >
+                      <option value="">Select a course</option>
+                      {courses.map(course => (
+                        <option key={course.code} value={course.code}>
+                          {course.code}: {course.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <Label>Assignment Title *</Label>
+                    <Input
+                      value={assignmentForm.title}
+                      onChange={(e) => setAssignmentForm({ ...assignmentForm, title: e.target.value })}
+                      placeholder="Enter assignment title"
+                    />
+                  </div>
+                  <div>
+                    <Label>Description</Label>
+                    <Textarea
+                      value={assignmentForm.description}
+                      onChange={(e) => setAssignmentForm({ ...assignmentForm, description: e.target.value })}
+                      placeholder="Enter assignment description"
+                      rows={4}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Due Date *</Label>
+                      <Input
+                        type="date"
+                        value={assignmentForm.dueDate}
+                        onChange={(e) => setAssignmentForm({ ...assignmentForm, dueDate: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <Label>Total Marks</Label>
+                      <Input
+                        type="number"
+                        value={assignmentForm.totalMarks}
+                        onChange={(e) => setAssignmentForm({ ...assignmentForm, totalMarks: e.target.value })}
+                        placeholder="100"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                  <Button onClick={handleCreateAssignment}>Create Assignment</Button>
+                </DialogFooter>
+              </>
+            )}
+
+            {dialogType === 'material' && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Upload New Material</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Material Title *</Label>
+                    <Input
+                      value={materialForm.title}
+                      onChange={(e) => setMaterialForm({ ...materialForm, title: e.target.value })}
+                      placeholder="e.g., Lecture 5: Binary Trees"
+                    />
+                  </div>
+                  <div>
+                    <Label>Material Type</Label>
+                    <select
+                      className="w-full p-2 border rounded-md"
+                      value={materialForm.type}
+                      onChange={(e) => setMaterialForm({ ...materialForm, type: e.target.value })}
+                    >
+                      <option value="lecture">Lecture</option>
+                      <option value="lab">Lab Manual</option>
+                      <option value="assignment">Assignment</option>
+                      <option value="reference">Reference Material</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label>Upload File</Label>
+                    <Input type="file" />
+                    <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, PPT, DOCX (Max 10MB)</p>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                  <Button onClick={handleUploadMaterial}>Upload Material</Button>
+                </DialogFooter>
+              </>
+            )}
+
+            {dialogType === 'grade' && gradeData && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Grade Assignment - {gradeData.title}</DialogTitle>
+                  <DialogDescription>
+                    {gradeData.course} • Due: {gradeData.dueDate}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Submitted</TableHead>
+                        <TableHead>Grade</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {students.slice(0, 5).map((student) => (
+                        <TableRow key={student.id}>
+                          <TableCell>{student.id}</TableCell>
+                          <TableCell>{student.name}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="bg-green-50">Yes</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Input type="number" placeholder="0-100" className="w-20" />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                  <Button onClick={handleGradeSubmission}>Submit Grades</Button>
+                </DialogFooter>
+              </>
+            )}
+
+            {dialogType === 'edit-material' && editMaterialData && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Edit Material - {editMaterialData.title}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Material Title *</Label>
+                    <Input
+                      value={materialForm.title}
+                      onChange={(e) => setMaterialForm({ ...materialForm, title: e.target.value })}
+                      placeholder="e.g., Lecture 5: Binary Trees"
+                    />
+                  </div>
+                  <div>
+                    <Label>Material Type</Label>
+                    <select
+                      className="w-full p-2 border rounded-md"
+                      value={materialForm.type}
+                      onChange={(e) => setMaterialForm({ ...materialForm, type: e.target.value })}
+                    >
+                      <option value="lecture">Lecture</option>
+                      <option value="lab">Lab Manual</option>
+                      <option value="assignment">Assignment</option>
+                      <option value="reference">Reference Material</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label>Upload File</Label>
+                    <Input type="file" />
+                    <p className="text-xs text-gray-500 mt-1">Supported formats: PDF, PPT, DOCX (Max 10MB)</p>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                  <Button onClick={handleUploadMaterial}>Update Material</Button>
+                </DialogFooter>
+              </>
+            )}
+
+            {dialogType === 'delete-material' && editMaterialData && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Delete Material - {editMaterialData.title}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <p className="text-gray-600">Are you sure you want to delete this material?</p>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                  <Button onClick={() => handleDeleteMaterial(editMaterialData.id)}>Delete Material</Button>
+                </DialogFooter>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

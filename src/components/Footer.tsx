@@ -46,23 +46,23 @@ export default function Footer() {
             <h3 className="text-white mb-4">Academics</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/downloads" className="hover:text-white transition-colors">
-                  Admissions
+                <Link to="/departments" className="hover:text-white transition-colors">
+                  Departments
                 </Link>
               </li>
               <li>
-                <Link to="/downloads" className="hover:text-white transition-colors">
-                  Academic Calendar
+                <Link to="/programs" className="hover:text-white transition-colors">
+                  Programs
                 </Link>
               </li>
               <li>
-                <Link to="/downloads" className="hover:text-white transition-colors">
-                  Examination
+                <Link to="/faculty" className="hover:text-white transition-colors">
+                  Faculty
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="hover:text-white transition-colors">
-                  Student Portal
+                <Link to="/fee-structure" className="hover:text-white transition-colors">
+                  Fee Structure
                 </Link>
               </li>
             </ul>

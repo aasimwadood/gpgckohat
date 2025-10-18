@@ -5,6 +5,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import DownloadPage from './pages/DownloadPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import DepartmentsPage from './pages/DepartmentsPage';
 import ProgramsPage from './pages/ProgramsPage';
 import FacultyPage from './pages/FacultyPage';
@@ -38,9 +39,9 @@ function App() {
     }
   }, []);
 
-  const handleLogin = (Userata: User) => {
-    setUser(Userata);
-    localStorage.setItem('currentUser', JSON.stringify(Userata));
+  const handleLogin = (userData: User) => {
+    setUser(userData);
+    localStorage.setItem('currentUser', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
@@ -73,71 +74,72 @@ function App() {
         <Route path="/requirements" element={<RequirementsPage user={user} onLogout={handleLogout} />} />
         <Route path="/fee-structure" element={<FeeStructurePage user={user} onLogout={handleLogout} />} />
         <Route path="/login" element={user ? <Navigate to={`/dashboard/${user.role}`} replace /> : <LoginPage onLogin={handleLogin} />} />
+        <Route path="/register" element={user ? <Navigate to={`/dashboard/${user.role}`} replace /> : <RegisterPage />} />
 
         {/* Protected Dashboard Routes */}
-        <Route 
-          path="/dashboard/admin" 
+        <Route
+          path="/dashboard/admin"
           element={
             <ProtectedRoute allowedRoles={['admin']}>
               <AdminDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard/faculty" 
+        <Route
+          path="/dashboard/faculty"
           element={
             <ProtectedRoute allowedRoles={['faculty']}>
               <FacultyDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard/student" 
+        <Route
+          path="/dashboard/student"
           element={
             <ProtectedRoute allowedRoles={['student']}>
               <StudentDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard/department" 
+        <Route
+          path="/dashboard/department"
           element={
             <ProtectedRoute allowedRoles={['department']}>
               <DepartmentDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard/controller" 
+        <Route
+          path="/dashboard/controller"
           element={
             <ProtectedRoute allowedRoles={['controller']}>
               <ControllerDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard/coordinator" 
+        <Route
+          path="/dashboard/coordinator"
           element={
             <ProtectedRoute allowedRoles={['coordinator']}>
               <CoordinatorDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard/principal" 
+        <Route
+          path="/dashboard/principal"
           element={
             <ProtectedRoute allowedRoles={['principal']}>
               <PrincipalDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/dashboard/administration" 
+        <Route
+          path="/dashboard/administration"
           element={
             <ProtectedRoute allowedRoles={['administration']}>
               <AdministrationDashboard user={user!} onLogout={handleLogout} />
             </ProtectedRoute>
-          } 
+          }
         />
 
         {/* Catch-all route - redirect to home */}
