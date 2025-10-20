@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { ScrollArea } from "./ui/scroll-area";
 import { Alert, AlertDescription } from "./ui/alert";
 import { CheckCircle, XCircle, Eye, AlertTriangle, TrendingUp, GraduationCap, FileText, DollarSign } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { Checkbox } from "./ui/checkbox";
 
 interface PromotionStudent {

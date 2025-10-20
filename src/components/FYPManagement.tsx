@@ -16,7 +16,7 @@ import {
   FileText, Upload, Check, X, Clock, AlertCircle, Users, Calendar,
   TrendingUp, Award, Download, Eye, Edit, Trash2, CheckCircle, XCircle, User
 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface FYPManagementProps {
   role: 'student' | 'faculty' | 'hod' | 'coordinator';

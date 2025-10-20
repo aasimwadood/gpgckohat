@@ -12,7 +12,7 @@ import { Textarea } from "./ui/textarea";
 import { ScrollArea } from "./ui/scroll-area";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Plus, CheckCircle, XCircle, Eye, AlertTriangle, FileText, Download, DollarSign } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface Student {
   id: string;
