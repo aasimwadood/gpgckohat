@@ -29,7 +29,7 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
   const [activeView, setActiveView] = useState('overview');
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<'course' | 'assignment' | 'material' | 'grade' | 'edit-material' | 'delete-material' | null>(null);
+  const [dialogType, setDialogType] = useState<'course' | 'assignment' | 'material' | 'grade' | 'view-assignment' | 'edit-material' | 'delete-material' | null>(null);
   const [assignmentForm, setAssignmentForm] = useState({
     course: '',
     title: '',
@@ -86,7 +86,7 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
 
   const [editMaterialData, setEditMaterialData] = useState<any>(null);
 
-  const openDialog = (type: 'course' | 'assignment' | 'material' | 'grade' | 'edit-material' | 'delete-material', data?: any) => {
+  const openDialog = (type: 'course' | 'assignment' | 'material' | 'grade' | 'view-assignment' | 'edit-material' | 'delete-material', data?: any) => {
     setDialogType(type as any);
     if (data) {
       if (type === 'assignment') {
