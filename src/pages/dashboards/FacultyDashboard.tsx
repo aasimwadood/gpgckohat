@@ -10,9 +10,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Checkbox } from '../../components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from '../../components/ui/dialog';
+import FYPManagement from '../../components/FYPManagement';
+import CourseFileReport from '../../components/CourseFileReport';
+import { AdmissionManagement } from '../../components/AdmissionManagement';
 import {
   LayoutDashboard, Users, CheckCircle, FileText, Upload,
-  BookOpen, MessageSquare, Calendar, Eye, Edit, Trash2, Plus
+  BookOpen, MessageSquare, Calendar, Eye, Edit, Trash2, Plus, Award, Download, UserPlus
 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { User } from '../../App';
@@ -46,9 +49,12 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
     { name: 'Attendance', icon: CheckCircle, onClick: () => setActiveView('attendance') },
     { name: 'Assignments', icon: FileText, onClick: () => setActiveView('assignments') },
     { name: 'Upload Marks', icon: Upload, onClick: () => setActiveView('marks') },
+    { name: 'Admissions', icon: UserPlus, onClick: () => setActiveView('admissions') },
     { name: 'Course Materials', icon: Upload, onClick: () => setActiveView('materials') },
     { name: 'Announcements', icon: MessageSquare, onClick: () => setActiveView('announcements') },
     { name: 'Class Schedule', icon: Calendar, onClick: () => setActiveView('schedule') },
+    { name: 'FYP Supervision', icon: Award, onClick: () => setActiveView('fyp') },
+    { name: 'Course File Report', icon: FileText, onClick: () => setActiveView('course-file') },
   ];
 
   const courses = [
@@ -355,10 +361,100 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                   </div>
                 </TabsContent>
                 <TabsContent value="cs-301">
-                  <p className="text-gray-600">Database Systems course details...</p>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Course Code</p>
+                        <p className="text-gray-900">CS-301</p>
+                      </div>
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Total Students</p>
+                        <p className="text-gray-900">38</p>
+                      </div>
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Section</p>
+                        <p className="text-gray-900">B</p>
+                      </div>
+                    </div>
+                    <div className="border-t pt-4">
+                      <h4 className="text-gray-900 mb-4">Course Description</h4>
+                      <p className="text-gray-600">
+                        Comprehensive study of database concepts, design, and implementation. Topics include SQL, normalization,
+                        transactions, and database security. Students will design and develop database applications.
+                      </p>
+                    </div>
+                    <div className="border-t pt-4">
+                      <h4 className="text-gray-900 mb-4">Student List</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Student ID</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Attendance</TableHead>
+                            <TableHead>Marks</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {students.slice(0, 3).map((student) => (
+                            <TableRow key={student.id}>
+                              <TableCell>{student.id.replace('CS', 'DB')}</TableCell>
+                              <TableCell>{student.name}</TableCell>
+                              <TableCell>{student.attendance - 2}%</TableCell>
+                              <TableCell>{student.marks - 3}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
                 </TabsContent>
                 <TabsContent value="cs-401">
-                  <p className="text-gray-600">Software Engineering course details...</p>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Course Code</p>
+                        <p className="text-gray-900">CS-401</p>
+                      </div>
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Total Students</p>
+                        <p className="text-gray-900">42</p>
+                      </div>
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <p className="text-sm text-gray-600">Section</p>
+                        <p className="text-gray-900">A</p>
+                      </div>
+                    </div>
+                    <div className="border-t pt-4">
+                      <h4 className="text-gray-900 mb-4">Course Description</h4>
+                      <p className="text-gray-600">
+                        Study of software engineering principles, methodologies, and tools. Topics include requirements analysis,
+                        design patterns, testing, and project management. Students work on team-based software projects.
+                      </p>
+                    </div>
+                    <div className="border-t pt-4">
+                      <h4 className="text-gray-900 mb-4">Student List</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Student ID</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Attendance</TableHead>
+                            <TableHead>Marks</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {students.map((student) => (
+                            <TableRow key={student.id}>
+                              <TableCell>{student.id.replace('CS', 'SE')}</TableCell>
+                              <TableCell>{student.name}</TableCell>
+                              <TableCell>{student.attendance + 3}%</TableCell>
+                              <TableCell>{student.marks + 2}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
                 </TabsContent>
               </Tabs>
             </CardContent>
@@ -394,6 +490,68 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                       {students.map((student) => (
                         <TableRow key={student.id}>
                           <TableCell>{student.id}</TableCell>
+                          <TableCell>{student.name}</TableCell>
+                          <TableCell>
+                            <Checkbox defaultChecked />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="mt-4">
+                    <Button onClick={() => toast.success('Attendance submitted successfully!')}>
+                      Submit Attendance
+                    </Button>
+                  </div>
+                </TabsContent>
+                <TabsContent value="cs-301" className="mt-4">
+                  <div className="mb-4">
+                    <Label>Date</Label>
+                    <Input type="date" className="max-w-xs" defaultValue={new Date().toISOString().split('T')[0]} />
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Present</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {students.slice(0, 3).map((student) => (
+                        <TableRow key={student.id}>
+                          <TableCell>{student.id.replace('CS', 'DB')}</TableCell>
+                          <TableCell>{student.name}</TableCell>
+                          <TableCell>
+                            <Checkbox defaultChecked />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <div className="mt-4">
+                    <Button onClick={() => toast.success('Attendance submitted successfully!')}>
+                      Submit Attendance
+                    </Button>
+                  </div>
+                </TabsContent>
+                <TabsContent value="cs-401" className="mt-4">
+                  <div className="mb-4">
+                    <Label>Date</Label>
+                    <Input type="date" className="max-w-xs" defaultValue={new Date().toISOString().split('T')[0]} />
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Present</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {students.map((student) => (
+                        <TableRow key={student.id}>
+                          <TableCell>{student.id.replace('CS', 'SE')}</TableCell>
                           <TableCell>{student.name}</TableCell>
                           <TableCell>
                             <Checkbox defaultChecked />
@@ -444,7 +602,11 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
                       <TableCell>{assignment.submissions}/{assignment.total}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openDialog('view-assignment', assignment)}
+                          >
                             <Eye className="w-4 h-4 mr-1" />
                             View
                           </Button>
@@ -661,6 +823,36 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
           </Card>
         )}
 
+        {activeView === 'fyp' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>FYP Supervision</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FYPManagement role="faculty" />
+            </CardContent>
+          </Card>
+        )}
+        {activeView === 'course-file' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Course File Report</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CourseFileReport />
+            </CardContent>
+          </Card>
+        )}
+        {activeView === 'admissions' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Admissions Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AdmissionManagement role="faculty" userName={user.name} />
+            </CardContent>
+          </Card>
+        )}
         {/* Dialogs */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -803,6 +995,69 @@ export default function FacultyDashboard({ user, onLogout }: FacultyDashboardPro
               </>
             )}
 
+            {dialogType === 'view-assignment' && gradeData && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Assignment Details - {gradeData.title}</DialogTitle>
+                  <DialogDescription>
+                    {gradeData.course} • Due: {gradeData.dueDate}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="text-sm text-gray-600">Total Submissions</p>
+                      <p className="text-gray-900">{gradeData.submissions}/{gradeData.total}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">On Time</p>
+                      <p className="text-gray-900">{gradeData.submissions - 2}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Late</p>
+                      <p className="text-gray-900">2</p>
+                    </div>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Submission Time</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {students.slice(0, 5).map((student, idx) => (
+                        <TableRow key={student.id}>
+                          <TableCell>{student.id}</TableCell>
+                          <TableCell>{student.name}</TableCell>
+                          <TableCell>{idx % 3 === 0 ? gradeData.dueDate : '2025-10-' + (18 + idx)}</TableCell>
+                          <TableCell>
+                            <Badge variant={idx % 3 === 0 ? 'default' : 'secondary'}>
+                              {idx % 3 === 0 ? 'On Time' : 'Late'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button size="sm" variant="outline">
+                              <Download className="w-4 h-4 mr-1" />
+                              Download
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Close</Button>
+                  <Button onClick={() => {
+                    setDialogType('grade');
+                  }}>Grade Submissions</Button>
+                </DialogFooter>
+              </>
+            )}
             {dialogType === 'grade' && gradeData && (
               <>
                 <DialogHeader>

@@ -60,11 +60,10 @@ export default function Header({ user, onLogout }: HeaderProps) {
             {/* Logo and Institution Name */}
             <Link to="/" className="flex items-center gap-4 group">
               <div className="relative">
-                {/* Decorative Logo Container */}
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300 group-hover:scale-105">
-                    <img src={logo} alt="GPC Kohat logo" className="w-7 h-7 object-contain" />
+                {/* College Logo */}
+                <div className="w-12 h-12 flex items-center justify-center transition-all duration-300 group-hover:scale-105">
+                  <img src={logo} alt="GPGC Kohat Logo" className="w-full h-full object-contain" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
               </div>
 
               <div className="hidden lg:flex flex-col">

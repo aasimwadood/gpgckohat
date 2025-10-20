@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
+import FYPManagement from '../../components/FYPManagement';
 import {
   LayoutDashboard, Calendar, BookOpen, FileText, DollarSign,
   Bell, User as UserIcon, CheckCircle, Clock, AlertCircle, TrendingUp, Download, Eye, Upload
@@ -643,29 +644,7 @@ export default function StudentDashboard({ user, onLogout }: StudentDashboardPro
               <CardTitle>Final Year Project</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Project Title</p>
-                    <p className="text-gray-900">AI-Based Chatbot for Customer Support</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Supervisor</p>
-                    <p className="text-gray-900">Dr. Jane Doe</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Status</p>
-                    <p className="text-gray-900">In Progress</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Last Submission Date</p>
-                    <p className="text-gray-900">Oct 10, 2025</p>
-                  </div>
-                </div>
-                <div className="pt-4">
-                  <Button onClick={() => openDialog('fyp-submit')}>Submit Project</Button>
-                </div>
-              </div>
+              <FYPManagement role="student" />
             </CardContent>
           </Card>
         )}

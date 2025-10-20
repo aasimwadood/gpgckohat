@@ -3,7 +3,14 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
+import { Badge } from '../../components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Textarea } from '../../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { LayoutDashboard, Calendar, Clock, Users, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import type { User } from '../../App';
 
 interface CoordinatorDashboardProps {
@@ -13,6 +20,14 @@ interface CoordinatorDashboardProps {
 
 export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDashboardProps) {
   const [activeView, setActiveView] = useState('overview');
+  const [createTimetableDialog, setCreateTimetableDialog] = useState(false);
+  const [addEventDialog, setAddEventDialog] = useState(false);
+  const [editEventDialog, setEditEventDialog] = useState(false);
+  const [resolveConflictDialog, setResolveConflictDialog] = useState(false);
+  const [viewScheduleDialog, setViewScheduleDialog] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedConflict, setSelectedConflict] = useState<any>(null);
+  const [selectedFaculty, setSelectedFaculty] = useState<any>(null);
 
   const navigation = [
     { name: 'Dashboard', icon: LayoutDashboard, onClick: () => setActiveView('overview') },
@@ -93,7 +108,7 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>Timetable Management</CardTitle>
-                <Button>Create New Timetable</Button>
+                <Button onClick={() => setCreateTimetableDialog(true)}>Create New Timetable</Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -133,7 +148,9 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
               </Table>
               <div className="mt-4 flex gap-2">
                 <Button>Save Timetable</Button>
-                <Button variant="outline">Publish</Button>
+                <Button variant="outline" onClick={() => {
+                  toast.success('Timetable published successfully');
+                }}>Publish</Button>
               </div>
             </CardContent>
           </Card>
@@ -144,7 +161,7 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>Academic Calendar</CardTitle>
-                <Button>Add Event</Button>
+                <Button onClick={() => setAddEventDialog(true)}>Add Event</Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -165,7 +182,10 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
                     <TableCell>2025-11-05</TableCell>
                     <TableCell>Holiday</TableCell>
                     <TableCell>
-                      <Button size="sm" variant="outline">Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => {
+                        setSelectedEvent({ name: 'Mid-term Break', startDate: '2025-11-01', endDate: '2025-11-05', type: 'Holiday' });
+                        setEditEventDialog(true);
+                      }}>Edit</Button>
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -174,13 +194,84 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
                     <TableCell>2025-12-25</TableCell>
                     <TableCell>Examination</TableCell>
                     <TableCell>
-                      <Button size="sm" variant="outline">Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => {
+                        setSelectedEvent({ name: 'Final Exams', startDate: '2025-12-15', endDate: '2025-12-25', type: 'Examination' });
+                        setEditEventDialog(true);
+                      }}>Edit</Button>
                     </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
+        )}
+        {activeView === 'faculty' && (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Faculty Coordination</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex gap-4 mb-4">
+                    <Input placeholder="Search faculty..." className="max-w-xs" />
+                    <Select>
+                      <SelectTrigger className="max-w-xs">
+                        <SelectValue placeholder="Filter by department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Departments</SelectItem>
+                        <SelectItem value="cs">Computer Science</SelectItem>
+                        <SelectItem value="ba">Business Administration</SelectItem>
+                        <SelectItem value="eng">Engineering</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Faculty Name</TableHead>
+                        <TableHead>Department</TableHead>
+                        <TableHead>Teaching Load</TableHead>
+                        <TableHead>Available Hours</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {[
+                        { name: 'Prof. John Doe', dept: 'Computer Science', load: '12 hrs', available: '8 hrs', status: 'Available' },
+                        { name: 'Dr. Sarah Smith', dept: 'Computer Science', load: '15 hrs', available: '5 hrs', status: 'Available' },
+                        { name: 'Prof. Michael Johnson', dept: 'Engineering', load: '18 hrs', available: '2 hrs', status: 'Limited' },
+                        { name: 'Dr. Emily Brown', dept: 'Business Admin', load: '9 hrs', available: '11 hrs', status: 'Available' },
+                      ].map((faculty, i) => (
+                        <TableRow key={i}>
+                          <TableCell>{faculty.name}</TableCell>
+                          <TableCell>{faculty.dept}</TableCell>
+                          <TableCell>{faculty.load}</TableCell>
+                          <TableCell>{faculty.available}</TableCell>
+                          <TableCell>
+                            <Badge variant={
+                              faculty.status === 'Available' ? 'default' :
+                              faculty.status === 'Limited' ? 'secondary' : 'destructive'
+                            }>
+                              {faculty.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button size="sm" variant="outline" onClick={() => {
+                              setSelectedFaculty(faculty);
+                              setViewScheduleDialog(true);
+                            }}>View Schedule</Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {activeView === 'conflicts' && (
@@ -191,9 +282,9 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
             <CardContent>
               <div className="space-y-4">
                 {[
-                  { issue: 'Room A-101 double booked on Monday 9:00 AM', priority: 'High' },
-                  { issue: 'Prof. John Doe scheduled for two classes at same time', priority: 'Critical' },
-                  { issue: 'Lab equipment unavailable for CS-301 practical', priority: 'Medium' },
+                  { issue: 'Room A-101 double booked on Monday 9:00 AM', priority: 'High', details: 'CS-201 and MATH-101 both scheduled' },
+                  { issue: 'Prof. John Doe scheduled for two classes at same time', priority: 'Critical', details: 'Tuesday 2:00 PM - CS-301 and CS-401' },
+                  { issue: 'Lab equipment unavailable for CS-301 practical', priority: 'Medium', details: 'Lab maintenance scheduled' },
                 ].map((conflict, i) => (
                   <div key={i} className="p-4 border rounded-lg">
                     <div className="flex justify-between items-start mb-2">
@@ -206,7 +297,11 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
                         {conflict.priority}
                       </span>
                     </div>
-                    <Button size="sm" variant="outline">Resolve</Button>
+                    <p className="text-sm text-gray-600 mb-3">{conflict.details}</p>
+                    <Button size="sm" variant="outline" onClick={() => {
+                      setSelectedConflict(conflict);
+                      setResolveConflictDialog(true);
+                    }}>Resolve</Button>
                   </div>
                 ))}
               </div>
@@ -214,6 +309,291 @@ export default function CoordinatorDashboard({ user, onLogout }: CoordinatorDash
           </Card>
         )}
       </div>
+      {/* Create Timetable Dialog */}
+      <Dialog open={createTimetableDialog} onOpenChange={setCreateTimetableDialog}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Create New Timetable</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Department</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cs">Computer Science</SelectItem>
+                    <SelectItem value="ba">Business Administration</SelectItem>
+                    <SelectItem value="eng">Engineering</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Semester</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select semester" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Semester 1</SelectItem>
+                    <SelectItem value="2">Semester 2</SelectItem>
+                    <SelectItem value="3">Semester 3</SelectItem>
+                    <SelectItem value="4">Semester 4</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Academic Year</Label>
+                <Input placeholder="e.g., 2025-2026" />
+              </div>
+              <div className="space-y-2">
+                <Label>Term</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select term" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fall">Fall</SelectItem>
+                    <SelectItem value="spring">Spring</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Template (Optional)</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Use existing template" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Start from scratch</SelectItem>
+                  <SelectItem value="prev">Previous semester</SelectItem>
+                  <SelectItem value="standard">Standard template</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Notes</Label>
+              <Textarea placeholder="Any special notes or requirements..." rows={3} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateTimetableDialog(false)}>Cancel</Button>
+            <Button onClick={() => {
+              toast.success('Timetable created successfully');
+              setCreateTimetableDialog(false);
+            }}>Create Timetable</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Add Event Dialog */}
+      <Dialog open={addEventDialog} onOpenChange={setAddEventDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Academic Event</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Event Name</Label>
+              <Input placeholder="e.g., Mid-term Examinations" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Start Date</Label>
+                <Input type="date" />
+              </div>
+              <div className="space-y-2">
+                <Label>End Date</Label>
+                <Input type="date" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Event Type</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="holiday">Holiday</SelectItem>
+                  <SelectItem value="exam">Examination</SelectItem>
+                  <SelectItem value="workshop">Workshop</SelectItem>
+                  <SelectItem value="meeting">Meeting</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Target Audience</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select audience" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Departments</SelectItem>
+                  <SelectItem value="cs">Computer Science</SelectItem>
+                  <SelectItem value="ba">Business Administration</SelectItem>
+                  <SelectItem value="eng">Engineering</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea placeholder="Event details and instructions..." rows={4} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddEventDialog(false)}>Cancel</Button>
+            <Button onClick={() => {
+              toast.success('Event added successfully');
+              setAddEventDialog(false);
+            }}>Add Event</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Edit Event Dialog */}
+      <Dialog open={editEventDialog} onOpenChange={setEditEventDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Event</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Event Name</Label>
+              <Input defaultValue={selectedEvent?.name} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Start Date</Label>
+                <Input type="date" defaultValue={selectedEvent?.startDate} />
+              </div>
+              <div className="space-y-2">
+                <Label>End Date</Label>
+                <Input type="date" defaultValue={selectedEvent?.endDate} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Event Type</Label>
+              <Select defaultValue={selectedEvent?.type?.toLowerCase()}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="holiday">Holiday</SelectItem>
+                  <SelectItem value="examination">Examination</SelectItem>
+                  <SelectItem value="workshop">Workshop</SelectItem>
+                  <SelectItem value="meeting">Meeting</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea placeholder="Event details..." rows={4} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditEventDialog(false)}>Cancel</Button>
+            <Button onClick={() => {
+              toast.success('Event updated successfully');
+              setEditEventDialog(false);
+            }}>Update Event</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Resolve Conflict Dialog */}
+      <Dialog open={resolveConflictDialog} onOpenChange={setResolveConflictDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Resolve Scheduling Conflict</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+              <h4 className="text-gray-900 mb-1">Conflict Details</h4>
+              <p className="text-sm text-gray-700">{selectedConflict?.issue}</p>
+              <p className="text-sm text-gray-600 mt-1">{selectedConflict?.details}</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Resolution Type</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select resolution" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="reschedule">Reschedule Class</SelectItem>
+                  <SelectItem value="changeroom">Change Room</SelectItem>
+                  <SelectItem value="changefaculty">Assign Different Faculty</SelectItem>
+                  <SelectItem value="cancel">Cancel One Session</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>New Time/Room (if applicable)</Label>
+              <Input placeholder="e.g., Monday 2:00 PM - Room B-201" />
+            </div>
+            <div className="space-y-2">
+              <Label>Resolution Notes</Label>
+              <Textarea placeholder="Explain the resolution and any actions taken..." rows={4} />
+            </div>
+            <div className="space-y-2">
+              <Label>Notify Affected Parties</Label>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="notify" className="rounded" defaultChecked />
+                <label htmlFor="notify" className="text-sm text-gray-600">
+                  Send notification to affected faculty and students
+                </label>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setResolveConflictDialog(false)}>Cancel</Button>
+            <Button onClick={() => {
+              toast.success('Conflict resolved successfully');
+              setResolveConflictDialog(false);
+            }}>Confirm Resolution</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* View Schedule Dialog */}
+      <Dialog open={viewScheduleDialog} onOpenChange={setViewScheduleDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>View Schedule for {selectedFaculty?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Department</Label>
+                <Input defaultValue={selectedFaculty?.dept} readOnly />
+              </div>
+              <div className="space-y-2">
+                <Label>Teaching Load</Label>
+                <Input defaultValue={selectedFaculty?.load} readOnly />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Available Hours</Label>
+                <Input defaultValue={selectedFaculty?.available} readOnly />
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Input defaultValue={selectedFaculty?.status} readOnly />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Classes</Label>
+              <Textarea placeholder="List of classes and their timings..." rows={6} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewScheduleDialog(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }

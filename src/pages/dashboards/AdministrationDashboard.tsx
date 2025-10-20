@@ -5,8 +5,9 @@ import { Button } from '../../components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Badge } from '../../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
-import { LayoutDashboard, DollarSign, BookOpen, HelpCircle, Calendar } from 'lucide-react';
+import { LayoutDashboard, DollarSign, BookOpen, HelpCircle, Calendar, UserPlus } from 'lucide-react';
 import type { User } from '../../App';
+import { AdmissionManagement } from '../../components/AdmissionManagement';
 
 interface AdministrationDashboardProps {
   user: User;
@@ -18,6 +19,7 @@ export default function AdministrationDashboard({ user, onLogout }: Administrati
 
   const navigation = [
     { name: 'Dashboard', icon: LayoutDashboard, onClick: () => setActiveView('overview') },
+    { name: 'Admissions - Fee Verification', icon: UserPlus, onClick: () => setActiveView('admissions') },
     { name: 'Finance & Fees', icon: DollarSign, onClick: () => setActiveView('finance') },
     { name: 'Library Management', icon: BookOpen, onClick: () => setActiveView('library') },
     { name: 'Helpdesk', icon: HelpCircle, onClick: () => setActiveView('helpdesk') },
@@ -101,6 +103,9 @@ export default function AdministrationDashboard({ user, onLogout }: Administrati
           </div>
         )}
 
+        {activeView === 'admissions' && (
+          <AdmissionManagement role="accountant" userName={user.name} />
+        )}
         {activeView === 'finance' && (
           <Tabs defaultValue="challans">
             <TabsList>
